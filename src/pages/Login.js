@@ -31,7 +31,7 @@ function Login() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "https://online-complaint-registration-production.up.railway.app/api/auth/login",
         formData
       );
 
@@ -46,19 +46,19 @@ function Login() {
 
       alert("Login Successful");
 
-     navigate("/home");
+      navigate("/home");
 
-    } 
-    catch (error) {
-  console.log("Login Error:", error);
+    } catch (error) {
+      console.log("Login Error:", error);
 
-  if (error.response) {
-    console.log("Response:", error.response.data);
-    alert(error.response.data.message);
-  } else {
-    alert(error.message);
-  }
-}
+      if (error.response) {
+        console.log("Response:", error.response.data);
+        alert(error.response.data.message);
+      } else {
+        alert(error.message);
+      }
+    }
+
     setLoading(false);
   };
 
