@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaTrash, FaEdit, FaSearch } from "react-icons/fa";
+import { FaTrash, FaSearch } from "react-icons/fa";
 
-function ComplaintList({ setEditComplaint = () => {} }) {
+function ComplaintList() {
   const [complaints, setComplaints] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
@@ -14,11 +14,10 @@ function ComplaintList({ setEditComplaint = () => {} }) {
   const fetchComplaints = async () => {
     try {
       const res = await axios.get(
-  "https://online-complaint-registration-production.up.railway.app/api/complaints"
-);
+        "https://online-complaint-registration-production.up.railway.app/api/complaints"
+      );
       setComplaints(res.data);
     } catch (err) {
-      console.log(err);
       alert("Unable to fetch complaints");
     } finally {
       setLoading(false);
@@ -30,17 +29,31 @@ function ComplaintList({ setEditComplaint = () => {} }) {
 
     try {
       await axios.delete(
-  `https://online-complaint-registration-production.up.railway.app/api/complaints/${id}`
-);
+        `https://online-complaint-registration-production.up.railway.app/api/complaints/${id}`
+      );
       fetchComplaints();
     } catch (err) {
       alert("Delete Failed");
     }
   };
 
-  const filtered = complaints.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase()) ||
-    item.subject.toLowerCase().includes(search.toLowerCase())
+  const updateStatus = async (id, status) => {
+    try {
+      await axios.put(
+        `https://online-complaint-registration-production.up.railway.app/api/complaints/${id}`,
+        { status }
+      );
+
+      fetchComplaints();
+    } catch (err) {
+      alert("Status Update Failed");
+    }
+  };
+
+  const filtered = complaints.filter(
+    (item) =>
+      item.name.toLowerCase().includes(search.toLowerCase()) ||
+      item.subject.toLowerCase().includes(search.toLowerCase())
   );
 
   if (loading)
@@ -52,9 +65,7 @@ function ComplaintList({ setEditComplaint = () => {} }) {
 
   return (
     <div className="container mt-4">
-
       <div className="card shadow">
-
         <div className="card-header bg-dark text-white">
           <h3>Complaint List</h3>
         </div>
@@ -62,7 +73,6 @@ function ComplaintList({ setEditComplaint = () => {} }) {
         <div className="card-body">
 
           <div className="input-group mb-3">
-
             <span className="input-group-text">
               <FaSearch />
             </span>
@@ -73,7 +83,6 @@ function ComplaintList({ setEditComplaint = () => {} }) {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-
           </div>
 
           <div className="table-responsive">
@@ -81,16 +90,14 @@ function ComplaintList({ setEditComplaint = () => {} }) {
             <table className="table table-bordered table-hover">
 
               <thead className="table-primary">
-
                 <tr>
                   <th>Name</th>
                   <th>Email</th>
                   <th>Subject</th>
                   <th>Complaint</th>
                   <th>Status</th>
-                  <th>Actions</th>
+                  <th>Delete</th>
                 </tr>
-
               </thead>
 
               <tbody>
@@ -111,33 +118,25 @@ function ComplaintList({ setEditComplaint = () => {} }) {
                       <td>{item.complaint}</td>
 
                       <td>
-                        <span
-                          className={`badge ${
-                            item.status === "Resolved"
-                              ? "bg-success"
-                              : "bg-warning text-dark"
-                          }`}
+                        <select
+                          className="form-select"
+                          value={item.status}
+                          onChange={(e) =>
+                            updateStatus(item._id, e.target.value)
+                          }
                         >
-                          {item.status}
-                        </span>
+                          <option value="Pending">Pending</option>
+                          <option value="Resolved">Resolved</option>
+                        </select>
                       </td>
 
                       <td>
-
-                        <button
-                          className="btn btn-warning btn-sm me-2"
-                          onClick={() => setEditComplaint(item)}
-                        >
-                          <FaEdit />
-                        </button>
-
                         <button
                           className="btn btn-danger btn-sm"
                           onClick={() => deleteComplaint(item._id)}
                         >
                           <FaTrash />
                         </button>
-
                       </td>
 
                     </tr>
@@ -151,9 +150,7 @@ function ComplaintList({ setEditComplaint = () => {} }) {
           </div>
 
         </div>
-
       </div>
-
     </div>
   );
 }
