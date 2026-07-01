@@ -14,8 +14,7 @@ function Home() {
       <div
         className="text-white text-center py-5"
         style={{
-          background:
-            "linear-gradient(135deg,#0d6efd,#6610f2)",
+          background: "linear-gradient(135deg,#0d6efd,#6610f2)",
           minHeight: "80vh",
         }}
       >
@@ -52,76 +51,91 @@ function Home() {
 
         <div className="row">
 
+          {/* Complaint Registration */}
+
           <div className="col-md-4 mb-4">
+            <Link
+              to="/complaint"
+              className="text-decoration-none text-dark"
+            >
+              <div className="card shadow h-100">
 
-            <div className="card shadow h-100">
+                <div className="card-body text-center">
 
-              <div className="card-body text-center">
+                  <FaClipboardList
+                    size={50}
+                    className="text-primary mb-3"
+                  />
 
-                <FaClipboardList
-                  size={50}
-                  className="text-primary mb-3"
-                />
+                  <h4>Complaint Registration</h4>
 
-                <h4>Complaint Registration</h4>
+                  <p>
+                    Users can easily register
+                    complaints online.
+                  </p>
 
-                <p>
-                  Users can easily register
-                  complaints online.
-                </p>
+                </div>
 
               </div>
-
-            </div>
-
+            </Link>
           </div>
 
+          {/* Complaint List */}
+
           <div className="col-md-4 mb-4">
+            <Link
+              to="/complaints"
+              className="text-decoration-none text-dark"
+            >
+              <div className="card shadow h-100">
 
-            <div className="card shadow h-100">
+                <div className="card-body text-center">
 
-              <div className="card-body text-center">
+                  <FaChartBar
+                    size={50}
+                    className="text-success mb-3"
+                  />
 
-                <FaChartBar
-                  size={50}
-                  className="text-success mb-3"
-                />
+                  <h4>Track Complaints</h4>
 
-                <h4>Track Complaints</h4>
+                  <p>
+                    View and track complaint
+                    status in real time.
+                  </p>
 
-                <p>
-                  Track complaint status in
-                  real time.
-                </p>
+                </div>
 
               </div>
-
-            </div>
-
+            </Link>
           </div>
 
+          {/* Admin */}
+
           <div className="col-md-4 mb-4">
+            <Link
+              to="/admin"
+              className="text-decoration-none text-dark"
+            >
+              <div className="card shadow h-100">
 
-            <div className="card shadow h-100">
+                <div className="card-body text-center">
 
-              <div className="card-body text-center">
+                  <FaUserShield
+                    size={50}
+                    className="text-danger mb-3"
+                  />
 
-                <FaUserShield
-                  size={50}
-                  className="text-danger mb-3"
-                />
+                  <h4>Admin Dashboard</h4>
 
-                <h4>Admin Dashboard</h4>
+                  <p>
+                    Admin can manage complaints
+                    efficiently.
+                  </p>
 
-                <p>
-                  Admin can manage complaints
-                  efficiently.
-                </p>
+                </div>
 
               </div>
-
-            </div>
-
+            </Link>
           </div>
 
         </div>
