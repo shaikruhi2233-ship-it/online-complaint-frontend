@@ -54,11 +54,12 @@ function Admin() {
     }
   };
 
-  const filtered = complaints.filter(
-    (item) =>
-      item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.subject.toLowerCase().includes(search.toLowerCase())
-  );
+ const filtered = complaints.filter(
+  (item) =>
+    item.name.toLowerCase().includes(search.toLowerCase()) ||
+    item.subject.toLowerCase().includes(search.toLowerCase()) ||
+    item.location?.toLowerCase().includes(search.toLowerCase())
+);
 
   const total = complaints.length;
   const pending = complaints.filter(
@@ -147,6 +148,7 @@ function Admin() {
                   <th>Name</th>
                   <th>Email</th>
                   <th>Subject</th>
+                  <th>Location</th>
                   <th>Complaint</th>
                   <th>Status</th>
                   <th>Actions</th>
@@ -161,7 +163,9 @@ function Admin() {
                     <td>{item.name}</td>
                     <td>{item.email}</td>
                     <td>{item.subject}</td>
+                    <td>{item.location}</td>
                     <td>{item.complaint}</td>
+                    
 
                     <td>
                       <button

@@ -7,6 +7,7 @@ import {
   FaCommentDots,
   FaPaperPlane,
   FaEdit,
+  FaMapMarkerAlt,
 } from "react-icons/fa";
 
 function ComplaintForm({ editComplaint, setEditComplaint }) {
@@ -14,6 +15,7 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
     name: "",
     email: "",
     subject: "",
+    location: "",
     complaint: "",
   });
 
@@ -23,16 +25,17 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
         name: editComplaint.name || "",
         email: editComplaint.email || "",
         subject: editComplaint.subject || "",
+        location: editComplaint.location || "",
         complaint: editComplaint.complaint || "",
       });
     }
   }, [editComplaint]);
 
   const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
+    setFormData({
+      ...formData,
       [e.target.name]: e.target.value,
-    }));
+    });
   };
 
   const clearForm = () => {
@@ -40,6 +43,7 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
       name: "",
       email: "",
       subject: "",
+      location: "",
       complaint: "",
     });
 
@@ -54,30 +58,27 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
     try {
       if (editComplaint) {
         await axios.put(
-  `https://online-complaint-registration-production.up.railway.app/api/complaints/${editComplaint._id}`,
-  formData
-);
-        
-
+          `https://online-complaint-registration-production.up.railway.app/api/complaints/${editComplaint._id}`,
+          formData
+        );
 
         alert("Complaint Updated Successfully");
       } else {
         await axios.post(
-  "https://online-complaint-registration-production.up.railway.app/api/complaints",
-  formData
-);
-      
+          "https://online-complaint-registration-production.up.railway.app/api/complaints",
+          formData
+        );
+
         alert("Complaint Submitted Successfully");
       }
 
       clearForm();
-
     } catch (error) {
-      console.error(error);
+      console.log(error);
 
       alert(
         error.response?.data?.message ||
-        "Operation Failed"
+          "Operation Failed"
       );
     }
   };
@@ -149,6 +150,23 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
                 name="subject"
                 value={formData.subject}
                 onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">
+                <FaMapMarkerAlt className="me-2 text-danger" />
+                Location
+              </label>
+
+              <input
+                type="text"
+                className="form-control"
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                placeholder="Enter Complaint Location"
                 required
               />
             </div>

@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaTrash, FaSearch } from "react-icons/fa";
 
+const API =
+  "https://online-complaint-registration-production.up.railway.app";
+
 function ComplaintList() {
   const [complaints, setComplaints] = useState([]);
   const [search, setSearch] = useState("");
@@ -13,9 +16,7 @@ function ComplaintList() {
 
   const fetchComplaints = async () => {
     try {
-      const res = await axios.get(
-        "https://online-complaint-registration-production.up.railway.app/api/complaints"
-      );
+      const res = await axios.get(`${API}/api/complaints`);
       setComplaints(res.data);
     } catch (err) {
       alert("Unable to fetch complaints");
@@ -28,9 +29,7 @@ function ComplaintList() {
     if (!window.confirm("Delete this complaint?")) return;
 
     try {
-      await axios.delete(
-        `https://online-complaint-registration-production.up.railway.app/api/complaints/${id}`
-      );
+      await axios.delete(`${API}/api/complaints/${id}`);
       fetchComplaints();
     } catch (err) {
       alert("Delete Failed");
@@ -39,10 +38,9 @@ function ComplaintList() {
 
   const updateStatus = async (id, status) => {
     try {
-      await axios.put(
-        `https://online-complaint-registration-production.up.railway.app/api/complaints/${id}`,
-        { status }
-      );
+      await axios.put(`${API}/api/complaints/${id}`, {
+        status,
+      });
 
       fetchComplaints();
     } catch (err) {
@@ -53,7 +51,8 @@ function ComplaintList() {
   const filtered = complaints.filter(
     (item) =>
       item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.subject.toLowerCase().includes(search.toLowerCase())
+      item.subject.toLowerCase().includes(search.toLowerCase()) ||
+      item.location?.toLowerCase().includes(search.toLowerCase())
   );
 
   if (loading)
@@ -66,6 +65,7 @@ function ComplaintList() {
   return (
     <div className="container mt-4">
       <div className="card shadow">
+
         <div className="card-header bg-dark text-white">
           <h3>Complaint List</h3>
         </div>
@@ -79,7 +79,7 @@ function ComplaintList() {
 
             <input
               className="form-control"
-              placeholder="Search..."
+              placeholder="Search by Name, Subject or Location..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -94,6 +94,7 @@ function ComplaintList() {
                   <th>Name</th>
                   <th>Email</th>
                   <th>Subject</th>
+                  <th>Location</th>
                   <th>Complaint</th>
                   <th>Status</th>
                   <th>Delete</th>
@@ -104,7 +105,7 @@ function ComplaintList() {
 
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="text-center">
+                    <td colSpan="7" className="text-center">
                       No Complaints Found
                     </td>
                   </tr>
@@ -115,6 +116,7 @@ function ComplaintList() {
                       <td>{item.name}</td>
                       <td>{item.email}</td>
                       <td>{item.subject}</td>
+                      <td>{item.location}</td>
                       <td>{item.complaint}</td>
 
                       <td>
@@ -150,6 +152,7 @@ function ComplaintList() {
           </div>
 
         </div>
+
       </div>
     </div>
   );
