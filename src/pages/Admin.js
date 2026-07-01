@@ -9,6 +9,9 @@ import {
   FaSearch,
 } from "react-icons/fa";
 
+const API =
+  "https://online-complaint-registration-production.up.railway.app";
+
 function Admin() {
   const [complaints, setComplaints] = useState([]);
   const [search, setSearch] = useState("");
@@ -19,10 +22,11 @@ function Admin() {
 
   const fetchComplaints = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/complaints");
+      const res = await axios.get(`${API}/api/complaints`);
       setComplaints(res.data);
     } catch (err) {
       console.log(err);
+      alert("Unable to fetch complaints");
     }
   };
 
@@ -30,12 +34,8 @@ function Admin() {
     if (!window.confirm("Delete this complaint?")) return;
 
     try {
-      await axios.delete(
-        `http://localhost:5000/api/complaints/${id}`
-      );
-
+      await axios.delete(`${API}/api/complaints/${id}`);
       fetchComplaints();
-
       alert("Complaint Deleted Successfully");
     } catch (err) {
       alert("Delete Failed");
@@ -44,15 +44,9 @@ function Admin() {
 
   const updateStatus = async (id, status) => {
     try {
-      await axios.put(
-        `http://localhost:5000/api/complaints/${id}`,
-        {
-          status:
-            status === "Pending"
-              ? "Resolved"
-              : "Pending",
-        }
-      );
+      await axios.put(`${API}/api/complaints/${id}`, {
+        status: status === "Pending" ? "Resolved" : "Pending",
+      });
 
       fetchComplaints();
     } catch (err) {
@@ -77,9 +71,7 @@ function Admin() {
   return (
     <div className="container mt-5">
 
-      <h2 className="text-center mb-4">
-        Admin Dashboard
-      </h2>
+      <h2 className="text-center mb-4">Admin Dashboard</h2>
 
       <div className="row">
 
@@ -134,7 +126,6 @@ function Admin() {
         <div className="card-body">
 
           <div className="input-group mb-3">
-
             <span className="input-group-text">
               <FaSearch />
             </span>
@@ -143,18 +134,15 @@ function Admin() {
               className="form-control"
               placeholder="Search Complaint..."
               value={search}
-              onChange={(e) =>
-                setSearch(e.target.value)
-              }
+              onChange={(e) => setSearch(e.target.value)}
             />
-
           </div>
-                    <div className="table-responsive">
+
+          <div className="table-responsive">
 
             <table className="table table-bordered table-hover">
 
               <thead className="table-primary">
-
                 <tr>
                   <th>Name</th>
                   <th>Email</th>
@@ -163,72 +151,45 @@ function Admin() {
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
-
               </thead>
 
               <tbody>
 
-                {filtered.length === 0 ? (
+                {filtered.map((item) => (
+                  <tr key={item._id}>
 
-                  <tr>
-                    <td colSpan="6" className="text-center">
-                      No Complaints Found
+                    <td>{item.name}</td>
+                    <td>{item.email}</td>
+                    <td>{item.subject}</td>
+                    <td>{item.complaint}</td>
+
+                    <td>
+                      <button
+                        className={
+                          item.status === "Resolved"
+                            ? "btn btn-success btn-sm"
+                            : "btn btn-warning btn-sm"
+                        }
+                        onClick={() =>
+                          updateStatus(item._id, item.status)
+                        }
+                      >
+                        {item.status}
+                      </button>
                     </td>
+
+                    <td>
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => deleteComplaint(item._id)}
+                      >
+                        <FaTrash className="me-1" />
+                        Delete
+                      </button>
+                    </td>
+
                   </tr>
-
-                ) : (
-
-                  filtered.map((item) => (
-
-                    <tr key={item._id}>
-
-                      <td>{item.name}</td>
-
-                      <td>{item.email}</td>
-
-                      <td>{item.subject}</td>
-
-                      <td>{item.complaint}</td>
-
-                      <td>
-
-                        <button
-                          className={
-                            item.status === "Resolved"
-                              ? "btn btn-success btn-sm"
-                              : "btn btn-warning btn-sm"
-                          }
-                          onClick={() =>
-                            updateStatus(
-                              item._id,
-                              item.status
-                            )
-                          }
-                        >
-                          {item.status}
-                        </button>
-
-                      </td>
-
-                      <td>
-
-                        <button
-                          className="btn btn-danger btn-sm"
-                          onClick={() =>
-                            deleteComplaint(item._id)
-                          }
-                        >
-                          <FaTrash className="me-1" />
-                          Delete
-                        </button>
-
-                      </td>
-
-                    </tr>
-
-                  ))
-
-                )}
+                ))}
 
               </tbody>
 
