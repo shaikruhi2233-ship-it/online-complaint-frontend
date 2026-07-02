@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaTrash, FaSearch } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { FaSearch, FaEye } from "react-icons/fa";
 
 const API =
-  "https://online-complaint-registration-production.up.railway.app";
+"http://localhost:5000";
 
 function ComplaintList() {
+  const navigate = useNavigate();
+
   const [complaints, setComplaints] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
@@ -15,39 +18,25 @@ function ComplaintList() {
   }, []);
 
   const fetchComplaints = async () => {
-    try {
-      const res = await axios.get(`${API}/api/complaints`);
-      setComplaints(res.data);
-    } catch (err) {
-      alert("Unable to fetch complaints");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const token = localStorage.getItem("token");
 
-  const deleteComplaint = async (id) => {
-    if (!window.confirm("Delete this complaint?")) return;
+    const res = await axios.get(`${API}/api/complaints`, {
+      headers: {
+        Authorization: token,
+      },
+    });
 
-    try {
-      await axios.delete(`${API}/api/complaints/${id}`);
-      fetchComplaints();
-    } catch (err) {
-      alert("Delete Failed");
-    }
-  };
+    setComplaints(res.data);
+  } catch (err) {
+    console.log(err);
+    alert("Unable to fetch complaints");
+  } finally {
+    setLoading(false);
+  }
+};
 
-  const updateStatus = async (id, status) => {
-    try {
-      await axios.put(`${API}/api/complaints/${id}`, {
-        status,
-      });
-
-      fetchComplaints();
-    } catch (err) {
-      alert("Status Update Failed");
-    }
-  };
-
+  
   const filtered = complaints.filter(
     (item) =>
       item.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -55,12 +44,13 @@ function ComplaintList() {
       item.location?.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (loading)
+  if (loading) {
     return (
       <div className="text-center mt-5">
         <h4>Loading...</h4>
       </div>
     );
+  }
 
   return (
     <div className="container mt-4">
@@ -79,7 +69,7 @@ function ComplaintList() {
 
             <input
               className="form-control"
-              placeholder="Search by Name, Subject or Location..."
+              placeholder="Search..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -93,11 +83,14 @@ function ComplaintList() {
                 <tr>
                   <th>Name</th>
                   <th>Email</th>
+                  <th>Mobile</th>
+                  <th>Category</th>
                   <th>Subject</th>
                   <th>Location</th>
-                  <th>Complaint</th>
+                  <th>Date</th>
                   <th>Status</th>
-                  <th>Delete</th>
+                  <th>View</th>
+                  
                 </tr>
               </thead>
 
@@ -105,7 +98,7 @@ function ComplaintList() {
 
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan="7" className="text-center">
+                    <td colSpan="6" className="text-center">
                       No Complaints Found
                     </td>
                   </tr>
@@ -115,31 +108,39 @@ function ComplaintList() {
 
                       <td>{item.name}</td>
                       <td>{item.email}</td>
+                      <td>{item.mobile}</td>
+                      <td>{item.Category}</td>
                       <td>{item.subject}</td>
                       <td>{item.location}</td>
-                      <td>{item.complaint}</td>
-
                       <td>
-                        <select
-                          className="form-select"
-                          value={item.status}
-                          onChange={(e) =>
-                            updateStatus(item._id, e.target.value)
-                          }
-                        >
-                          <option value="Pending">Pending</option>
-                          <option value="Resolved">Resolved</option>
-                        </select>
-                      </td>
+  {new Date(item.createdAt).toLocaleString()}
+</td>
+                     <td>
+  <span
+    className={
+      item.status === "Resolved"
+        ? "badge bg-success"
+        : "badge bg-warning text-dark"
+    }
+  >
+    {item.status}
+  </span>
+</td>
 
                       <td>
                         <button
-                          className="btn btn-danger btn-sm"
-                          onClick={() => deleteComplaint(item._id)}
+                          className="btn btn-info btn-sm"
+                          onClick={() =>
+                            navigate(`/complaint/${item._id}`, {
+                              state: item,
+                            })
+                          }
                         >
-                          <FaTrash />
+                          <FaEye />
                         </button>
                       </td>
+
+                      
 
                     </tr>
                   ))

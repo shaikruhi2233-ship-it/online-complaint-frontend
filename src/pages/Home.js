@@ -19,15 +19,12 @@ function Home() {
         }}
       >
         <div className="container">
-
           <h1 className="display-4 fw-bold">
-            Online Complaint Registration &
-            Management System
+            Online Complaint Registration & Management System
           </h1>
 
           <p className="lead mt-3">
-            Register complaints, track status,
-            and manage them efficiently.
+            Register complaints, track status, and manage them efficiently.
           </p>
 
           <Link
@@ -37,14 +34,11 @@ function Home() {
             Register Complaint
             <FaArrowRight className="ms-2" />
           </Link>
-
         </div>
       </div>
 
       {/* Features */}
-
       <div className="container py-5">
-
         <h2 className="text-center mb-5">
           Our Features
         </h2>
@@ -52,16 +46,13 @@ function Home() {
         <div className="row">
 
           {/* Complaint Registration */}
-
           <div className="col-md-4 mb-4">
             <Link
               to="/complaint"
               className="text-decoration-none text-dark"
             >
               <div className="card shadow h-100">
-
                 <div className="card-body text-center">
-
                   <FaClipboardList
                     size={50}
                     className="text-primary mb-3"
@@ -70,27 +61,21 @@ function Home() {
                   <h4>Complaint Registration</h4>
 
                   <p>
-                    Users can easily register
-                    complaints online.
+                    Users can easily register complaints online.
                   </p>
-
                 </div>
-
               </div>
             </Link>
           </div>
 
-          {/* Complaint List */}
-
+          {/* Track Complaints */}
           <div className="col-md-4 mb-4">
             <Link
               to="/complaints"
               className="text-decoration-none text-dark"
             >
               <div className="card shadow h-100">
-
                 <div className="card-body text-center">
-
                   <FaChartBar
                     size={50}
                     className="text-success mb-3"
@@ -99,27 +84,21 @@ function Home() {
                   <h4>Track Complaints</h4>
 
                   <p>
-                    View and track complaint
-                    status in real time.
+                    View and track complaint status in real time.
                   </p>
-
                 </div>
-
               </div>
             </Link>
           </div>
 
-          {/* Admin */}
-
+          {/* Admin Dashboard */}
           <div className="col-md-4 mb-4">
             <Link
-              to="/admin"
+              to="/admin-login"
               className="text-decoration-none text-dark"
             >
               <div className="card shadow h-100">
-
                 <div className="card-body text-center">
-
                   <FaUserShield
                     size={50}
                     className="text-danger mb-3"
@@ -128,18 +107,14 @@ function Home() {
                   <h4>Admin Dashboard</h4>
 
                   <p>
-                    Admin can manage complaints
-                    efficiently.
+                    Login as Admin to manage all complaints.
                   </p>
-
                 </div>
-
               </div>
             </Link>
           </div>
 
         </div>
-
       </div>
     </>
   );

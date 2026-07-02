@@ -38,8 +38,8 @@ function Register() {
     setLoading(true);
 
     try {
-      await axios.post(
-  "https://online-complaint-registration-production.up.railway.app/api/auth/register",
+     await axios.post(
+  "http://localhost:5000/api/auth/register",
   {
     name: formData.name,
     email: formData.email,

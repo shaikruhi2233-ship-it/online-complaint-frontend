@@ -12,11 +12,12 @@ function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Hide Navbar on Login & Register pages
+  // Hide Navbar on Login, Register & Admin Login pages
   if (
     location.pathname === "/" ||
     location.pathname === "/login" ||
-    location.pathname === "/register"
+    location.pathname === "/register" ||
+    location.pathname === "/admin-login"
   ) {
     return null;
   }
@@ -25,13 +26,19 @@ function Navbar() {
 
   try {
     user = JSON.parse(localStorage.getItem("user"));
-  } catch (e) {
+  } catch (error) {
     user = null;
   }
+
+  const isAdmin = localStorage.getItem("admin") === "true";
 
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("admin");
+
+    alert("Logged Out Successfully");
+
     navigate("/login");
   };
 
@@ -53,6 +60,7 @@ function Navbar() {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarNav">
+
           <ul className="navbar-nav ms-auto">
 
             <li className="nav-item">
@@ -76,24 +84,35 @@ function Navbar() {
               </NavLink>
             </li>
 
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/admin">
-                <FaUserShield className="me-1" />
-                Admin
-              </NavLink>
-            </li>
+            {isAdmin && (
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/admin">
+                  <FaUserShield className="me-1" />
+                  Admin Dashboard
+                </NavLink>
+              </li>
+            )}
 
           </ul>
 
           <span className="text-white ms-3 me-3">
-            {user ? `Welcome, ${user.name}` : ""}
+            {isAdmin
+              ? "Welcome, Admin"
+              : user
+              ? `Welcome, ${user.name}`
+              : ""}
           </span>
 
-          <button className="btn btn-danger" onClick={logout}>
+          <button
+            className="btn btn-danger"
+            onClick={logout}
+          >
             <FaSignOutAlt className="me-2" />
             Logout
           </button>
+
         </div>
+
       </div>
     </nav>
   );

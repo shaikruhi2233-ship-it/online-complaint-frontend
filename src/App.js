@@ -5,12 +5,15 @@ import "./App.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
+import AdminRoute from "./components/AdminRoute";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import AdminLogin from "./pages/AdminLogin";
 import Home from "./pages/Home";
 import ComplaintPage from "./pages/ComplaintPage";
 import ComplaintListPage from "./pages/ComplaintListPage";
+import ComplaintDetails from "./pages/ComplaintDetails";
 import Admin from "./pages/Admin";
 import Profile from "./pages/Profile";
 import Feedback from "./pages/Feedback";
@@ -18,7 +21,6 @@ import Feedback from "./pages/Feedback";
 function App() {
   return (
     <BrowserRouter>
-
       <Navbar />
 
       <Routes>
@@ -27,8 +29,9 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
 
-        {/* Protected Routes */}
+        {/* User Routes */}
         <Route
           path="/home"
           element={
@@ -56,11 +59,12 @@ function App() {
           }
         />
 
+        {/* Complaint Details */}
         <Route
-          path="/admin"
+          path="/complaint/:id"
           element={
             <PrivateRoute>
-              <Admin />
+              <ComplaintDetails />
             </PrivateRoute>
           }
         />
@@ -83,13 +87,22 @@ function App() {
           }
         />
 
-        {/* Invalid URL redirect */}
+        {/* Admin Route */}
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <Admin />
+            </AdminRoute>
+          }
+        />
+
+        {/* Invalid Route */}
         <Route path="*" element={<Login />} />
 
       </Routes>
 
       <Footer />
-
     </BrowserRouter>
   );
 }

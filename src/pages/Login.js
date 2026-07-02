@@ -31,14 +31,15 @@ function Login() {
 
     try {
       const res = await axios.post(
-        "https://online-complaint-registration-production.up.railway.app/api/auth/login",
+        "http://localhost:5000/api/auth/login",
         formData
       );
 
-      // Save Token
-      localStorage.setItem("token", res.data.token);
+      // Clear previous session
+      localStorage.clear();
 
-      // Save User
+      // Save user session
+      localStorage.setItem("token", res.data.token);
       localStorage.setItem(
         "user",
         JSON.stringify(res.data.user)
@@ -47,16 +48,13 @@ function Login() {
       alert("Login Successful");
 
       navigate("/home");
-
     } catch (error) {
-      console.log("Login Error:", error);
+      console.log(error);
 
-      if (error.response) {
-        console.log("Response:", error.response.data);
-        alert(error.response.data.message);
-      } else {
-        alert(error.message);
-      }
+      alert(
+        error.response?.data?.message ||
+        "Login Failed"
+      );
     }
 
     setLoading(false);
@@ -64,7 +62,6 @@ function Login() {
 
   return (
     <div className="container mt-5">
-
       <div className="row justify-content-center">
 
         <div className="col-md-5">
@@ -72,12 +69,10 @@ function Login() {
           <div className="card shadow-lg border-0">
 
             <div className="card-header bg-primary text-white text-center">
-
               <h2>
                 <FaSignInAlt className="me-2" />
-                Login
+                User Login
               </h2>
-
             </div>
 
             <div className="card-body p-4">
@@ -85,9 +80,8 @@ function Login() {
               <form onSubmit={handleSubmit}>
 
                 <div className="mb-3">
-
                   <label className="form-label">
-                    <FaEnvelope className="me-2 text-primary" />
+                    <FaEnvelope className="me-2" />
                     Email
                   </label>
 
@@ -97,16 +91,13 @@ function Login() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="Enter Email"
                     required
                   />
-
                 </div>
 
                 <div className="mb-4">
-
                   <label className="form-label">
-                    <FaLock className="me-2 text-primary" />
+                    <FaLock className="me-2" />
                     Password
                   </label>
 
@@ -116,25 +107,15 @@ function Login() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Enter Password"
                     required
                   />
-
                 </div>
 
                 <button
                   className="btn btn-primary w-100"
-                  type="submit"
                   disabled={loading}
                 >
-                  {loading ? (
-                    "Logging in..."
-                  ) : (
-                    <>
-                      <FaSignInAlt className="me-2" />
-                      Login
-                    </>
-                  )}
+                  {loading ? "Logging in..." : "Login"}
                 </button>
 
               </form>
@@ -142,16 +123,13 @@ function Login() {
               <hr />
 
               <p className="text-center">
-
                 Don't have an account?
-
                 <Link
                   to="/register"
-                  className="ms-2 text-decoration-none fw-bold"
+                  className="ms-2"
                 >
                   Register
                 </Link>
-
               </p>
 
             </div>
@@ -161,7 +139,6 @@ function Login() {
         </div>
 
       </div>
-
     </div>
   );
 }
