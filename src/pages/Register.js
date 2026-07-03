@@ -11,9 +11,10 @@ import {
 function Register() {
   const navigate = useNavigate();
 
-  // Railway Backend URL
+  // Backend API
   const API =
-  process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+    process.env.REACT_APP_API_URL ||
+    "https://online-complaint-registration-production.up.railway.app/api";
 
   const [formData, setFormData] = useState({
     name: "",
@@ -42,7 +43,7 @@ function Register() {
     setLoading(true);
 
     try {
-      await axios.post(`${API_URL}/auth/register`, {
+      await axios.post(`${API}/auth/register`, {
         name: formData.name,
         email: formData.email,
         password: formData.password,
