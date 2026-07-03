@@ -6,7 +6,8 @@ import {
   FaSignInAlt,
 } from "react-icons/fa";
 
-const API = "http://localhost:5000";
+const API =
+  process.env.REACT_APP_API_URL || "http://localhost:5000/api";
 
 function AdminLogin() {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ function AdminLogin() {
     email: "",
     password: "",
   });
+
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -26,23 +29,29 @@ function AdminLogin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setLoading(true);
+
     try {
       const res = await axios.post(
-        `${API}/api/auth/login`,
+        `${API}/auth/login`,
         formData
       );
 
-      // Check whether the logged-in user is an admin
       if (res.data.user.role !== "admin") {
         alert("Access Denied. Admin Only.");
+        setLoading(false);
         return;
       }
 
+      localStorage.clear();
+
       localStorage.setItem("token", res.data.token);
+
       localStorage.setItem(
         "user",
         JSON.stringify(res.data.user)
       );
+
       localStorage.setItem("admin", "true");
 
       alert("Admin Login Successful");
@@ -50,15 +59,22 @@ function AdminLogin() {
       navigate("/admin");
 
     } catch (err) {
+      console.log(err);
+
       alert(
-        err.response?.data?.message || "Login Failed"
+        err.response?.data?.message ||
+        "Login Failed"
       );
     }
+
+    setLoading(false);
   };
 
   return (
     <div className="container mt-5">
+
       <div className="row justify-content-center">
+
         <div className="col-md-5">
 
           <div className="card shadow-lg border-0">
@@ -103,9 +119,10 @@ function AdminLogin() {
                 <button
                   type="submit"
                   className="btn btn-danger w-100"
+                  disabled={loading}
                 >
                   <FaSignInAlt className="me-2" />
-                  Admin Login
+                  {loading ? "Logging in..." : "Admin Login"}
                 </button>
 
               </form>
@@ -115,7 +132,9 @@ function AdminLogin() {
           </div>
 
         </div>
+
       </div>
+
     </div>
   );
 }

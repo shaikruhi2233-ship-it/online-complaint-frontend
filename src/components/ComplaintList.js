@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FaSearch, FaEye } from "react-icons/fa";
 
 const API =
-"http://localhost:5000";
-
+  process.env.REACT_APP_API_URL || "http://localhost:5000/api";
 function ComplaintList() {
   const navigate = useNavigate();
 
@@ -18,25 +17,27 @@ function ComplaintList() {
   }, []);
 
   const fetchComplaints = async () => {
-  try {
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    const res = await axios.get(`${API}/api/complaints`, {
-      headers: {
-        Authorization: token,
-      },
-    });
+      const res = await axios.get(`${API}/complaints`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    setComplaints(res.data);
-  } catch (err) {
-    console.log(err);
-    alert("Unable to fetch complaints");
-  } finally {
-    setLoading(false);
-  }
-};
+      setComplaints(res.data);
+    } catch (err) {
+      console.log(err);
+      alert(
+        err.response?.data?.message ||
+          "Unable to fetch complaints"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  
   const filtered = complaints.filter(
     (item) =>
       item.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -90,7 +91,6 @@ function ComplaintList() {
                   <th>Date</th>
                   <th>Status</th>
                   <th>View</th>
-                  
                 </tr>
               </thead>
 
@@ -98,7 +98,7 @@ function ComplaintList() {
 
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="text-center">
+                    <td colSpan="9" className="text-center">
                       No Complaints Found
                     </td>
                   </tr>
@@ -109,23 +109,25 @@ function ComplaintList() {
                       <td>{item.name}</td>
                       <td>{item.email}</td>
                       <td>{item.mobile}</td>
-                      <td>{item.Category}</td>
+                      <td>{item.category}</td>
                       <td>{item.subject}</td>
                       <td>{item.location}</td>
+
                       <td>
-  {new Date(item.createdAt).toLocaleString()}
-</td>
-                     <td>
-  <span
-    className={
-      item.status === "Resolved"
-        ? "badge bg-success"
-        : "badge bg-warning text-dark"
-    }
-  >
-    {item.status}
-  </span>
-</td>
+                        {new Date(item.createdAt).toLocaleString()}
+                      </td>
+
+                      <td>
+                        <span
+                          className={
+                            item.status === "Resolved"
+                              ? "badge bg-success"
+                              : "badge bg-warning text-dark"
+                          }
+                        >
+                          {item.status}
+                        </span>
+                      </td>
 
                       <td>
                         <button
@@ -139,8 +141,6 @@ function ComplaintList() {
                           <FaEye />
                         </button>
                       </td>
-
-                      
 
                     </tr>
                   ))

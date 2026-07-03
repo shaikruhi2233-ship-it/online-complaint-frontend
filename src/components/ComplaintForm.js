@@ -10,12 +10,15 @@ import {
   FaMapMarkerAlt,
 } from "react-icons/fa";
 
+const API_URL =
+  process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+
 function ComplaintForm({ editComplaint, setEditComplaint }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     mobile: "",
-      category: "",
+    category: "",
     subject: "",
     location: "",
     complaint: "",
@@ -46,8 +49,8 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
     setFormData({
       name: "",
       email: "",
-       mobile: "",
-       category: "",
+      mobile: "",
+      category: "",
       subject: "",
       location: "",
       complaint: "",
@@ -59,47 +62,53 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-  try {
-    if (editComplaint) {
-      await axios.put(
-        `http://localhost:5000/api/complaints/${editComplaint._id}`,
-        formData,
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-
-      alert("Complaint Updated Successfully");
-    } else {
-      await axios.post(
-        "http://localhost:5000/api/complaints",
-        formData,
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-
-      alert("Complaint Submitted Successfully");
+    if (!token) {
+      alert("Please login first.");
+      return;
     }
 
-    clearForm();
-  } catch (error) {
-    console.error(error);
+    try {
+      if (editComplaint) {
+        await axios.put(
+          `${API_URL}/complaints/${editComplaint._id}`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-    alert(
-      error.response?.data?.message ||
-      "Operation Failed"
-    );
-  }
-};
+        alert("Complaint Updated Successfully");
+      } else {
+        await axios.post(
+          `${API_URL}/complaints`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        alert("Complaint Submitted Successfully");
+      }
+
+      clearForm();
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        error.response?.data?.message ||
+        "Operation Failed"
+      );
+    }
+  };
+
   return (
     <div className="container my-4">
       <div className="card shadow border-0">
@@ -112,9 +121,7 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
                 Update Complaint
               </>
             ) : (
-              <>
-                📝 Register Complaint
-              </>
+              <>📝 Register Complaint</>
             )}
           </h3>
         </div>
@@ -154,44 +161,45 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
                 required
               />
             </div>
+
             <div className="mb-3">
-  <label className="form-label">
-    📱 Mobile Number
-  </label>
+              <label className="form-label">
+                📱 Mobile Number
+              </label>
 
-  <input
-    type="tel"
-    className="form-control"
-    name="mobile"
-    value={formData.mobile}
-    onChange={handleChange}
-    placeholder="Enter Mobile Number"
-    required
-    pattern="[0-9]{10}"
-    maxLength="10"
-  />
-</div>
-<div className="mb-3">
-  <label className="form-label">
-    📂 Complaint Category
-  </label>
+              <input
+                type="tel"
+                className="form-control"
+                name="mobile"
+                value={formData.mobile}
+                onChange={handleChange}
+                required
+                pattern="[0-9]{10}"
+                maxLength="10"
+              />
+            </div>
 
-  <select
-    className="form-select"
-    name="category"
-    value={formData.category}
-    onChange={handleChange}
-    required
-  >
-    <option value="">Select Category</option>
-    <option value="Water">Water</option>
-    <option value="Electricity">Electricity</option>
-    <option value="Internet">Internet</option>
-    <option value="Hostel">Hostel</option>
-    <option value="Cleaning">Cleaning</option>
-    <option value="Others">Others</option>
-  </select>
-</div>
+            <div className="mb-3">
+              <label className="form-label">
+                📂 Complaint Category
+              </label>
+
+              <select
+                className="form-select"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Category</option>
+                <option value="Water">Water</option>
+                <option value="Electricity">Electricity</option>
+                <option value="Internet">Internet</option>
+                <option value="Hostel">Hostel</option>
+                <option value="Cleaning">Cleaning</option>
+                <option value="Others">Others</option>
+              </select>
+            </div>
 
             <div className="mb-3">
               <label className="form-label">
@@ -221,7 +229,6 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
-                placeholder="Enter Complaint Location"
                 required
               />
             </div>
@@ -233,8 +240,8 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
               </label>
 
               <textarea
-                className="form-control"
                 rows="5"
+                className="form-control"
                 name="complaint"
                 value={formData.complaint}
                 onChange={handleChange}
@@ -243,7 +250,6 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
             </div>
 
             <div className="text-center">
-
               <button
                 type="submit"
                 className="btn btn-success me-3"
@@ -261,13 +267,11 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
               >
                 Clear
               </button>
-
             </div>
 
           </form>
 
         </div>
-
       </div>
     </div>
   );

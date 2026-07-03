@@ -10,6 +10,10 @@ import {
 function Login() {
   const navigate = useNavigate();
 
+  // Railway Backend URL
+  const API =
+  process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -31,15 +35,17 @@ function Login() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        formData
-      );
+  `${API}/auth/login`,
+  formData
+);
 
       // Clear previous session
       localStorage.clear();
 
-      // Save user session
+      // Save token
       localStorage.setItem("token", res.data.token);
+
+      // Save user
       localStorage.setItem(
         "user",
         JSON.stringify(res.data.user)
@@ -91,6 +97,7 @@ function Login() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
+                    placeholder="Enter Email"
                     required
                   />
                 </div>
@@ -107,11 +114,13 @@ function Login() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
+                    placeholder="Enter Password"
                     required
                   />
                 </div>
 
                 <button
+                  type="submit"
                   className="btn btn-primary w-100"
                   disabled={loading}
                 >

@@ -11,6 +11,10 @@ import {
 function Register() {
   const navigate = useNavigate();
 
+  // Railway Backend URL
+  const API =
+  process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -38,20 +42,18 @@ function Register() {
     setLoading(true);
 
     try {
-     await axios.post(
-  "http://localhost:5000/api/auth/register",
-  {
-    name: formData.name,
-    email: formData.email,
-    password: formData.password,
-  }
-);
+      await axios.post(`${API_URL}/auth/register`, {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
 
       alert("Registration Successful");
 
       navigate("/login");
-
     } catch (error) {
+      console.log(error);
+
       alert(
         error.response?.data?.message ||
         "Registration Failed"
@@ -63,7 +65,6 @@ function Register() {
 
   return (
     <div className="container mt-5">
-
       <div className="row justify-content-center">
 
         <div className="col-md-6">
@@ -170,7 +171,6 @@ function Register() {
 
               <p className="text-center">
                 Already have an account?
-
                 <Link
                   to="/login"
                   className="ms-2 fw-bold text-decoration-none"
@@ -186,7 +186,6 @@ function Register() {
         </div>
 
       </div>
-
     </div>
   );
 }

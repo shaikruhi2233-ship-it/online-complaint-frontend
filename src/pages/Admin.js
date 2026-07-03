@@ -9,7 +9,7 @@ import {
   FaSearch,
 } from "react-icons/fa";
 
-const API = "http://localhost:5000";
+const API = "https://online-complaint-registration-system-cigw.onrender.com/api";
 
 function Admin() {
   const [complaints, setComplaints] = useState([]);
@@ -25,9 +25,9 @@ function Admin() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await axios.get(`${API}/api/complaints`, {
+      const res = await axios.get(`${API}/complaints`, {
         headers: {
-          Authorization: token,
+          Authorization:  `Bearer ${token}`,
         },
       });
 
@@ -43,10 +43,10 @@ function Admin() {
       const token = localStorage.getItem("token");
 
       const res = await axios.get(
-        `${API}/api/auth/total-users`,
+        `${API}/auth/total-users`,
         {
           headers: {
-            Authorization: token,
+            Authorization:  `Bearer ${token}`,
           },
         }
       );
@@ -63,9 +63,9 @@ function Admin() {
   try {
     const token = localStorage.getItem("token");
 
-    await axios.delete(`${API}/api/complaints/${id}`, {
+    await axios.delete(`${API}/complaints/${id}`, {
       headers: {
-        Authorization: token,
+        Authorization:  `Bearer ${token}`,
       },
     });
 
@@ -81,13 +81,13 @@ const updateStatus = async (id, status) => {
     const token = localStorage.getItem("token");
 
     await axios.put(
-      `${API}/api/complaints/${id}`,
+      `${API}/complaints/${id}`,
       {
         status: status === "Pending" ? "Resolved" : "Pending",
       },
       {
         headers: {
-          Authorization: token,
+          Authorization:  `Bearer ${token}`,
         },
       }
     );
@@ -226,7 +226,7 @@ return (
                     <td>{item.location}</td>
                     <td>{item.complaint}</td>
                     <td>{new Date(item.createdAt).toLocaleString()}</td>
-
+                    <td>{item.complaint}</td>
                     <td>
                       <button
                         className={
