@@ -9,7 +9,9 @@ import {
   FaSearch,
 } from "react-icons/fa";
 
-const API = "https://online-complaint-registration-system-cigw.onrender.com/api";
+const API =
+  process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+  
 
 function Admin() {
   const [complaints, setComplaints] = useState([]);
@@ -21,22 +23,31 @@ function Admin() {
     fetchTotalUsers();
   }, []);
 
-  const fetchComplaints = async () => {
-    try {
-      const token = localStorage.getItem("token");
+ const fetchComplaints = async () => {
+  try {
+    const token = localStorage.getItem("token");
 
-      const res = await axios.get(`${API}/complaints`, {
-        headers: {
-          Authorization:  `Bearer ${token}`,
-        },
-      });
+    console.log("TOKEN:", token);
 
-      setComplaints(res.data);
-    } catch (err) {
-      console.log(err);
-      alert("Unable to fetch complaints");
-    }
-  };
+    const res = await axios.get(`${API}/complaints`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("SUCCESS:", res.data);
+
+    setComplaints(res.data);
+  } catch (err) {
+    console.log("FULL ERROR:", err);
+
+    console.log("STATUS:", err.response?.status);
+
+    console.log("DATA:", err.response?.data);
+
+    alert(err.response?.data?.message || "Unable to fetch complaints");
+  }
+};
 
   const fetchTotalUsers = async () => {
     try {
@@ -206,59 +217,57 @@ return (
               </tr>
             </thead>
 
-            <tbody>
+           <tbody>
+  {filtered.length === 0 ? (
+    <tr>
+      <td colSpan="10" className="text-center">
+        No Complaints Found
+      </td>
+    </tr>
+  ) : (
+    filtered.map((item) => (
+      <tr key={item._id}>
+        <td>{item.name}</td>
+        <td>{item.email}</td>
+        <td>{item.mobile}</td>
+        <td>{item.category}</td>
+        <td>{item.subject}</td>
+        <td>{item.location}</td>
 
-              {filtered.length === 0 ? (
-                <tr>
-                  <td colSpan="9" className="text-center">
-                    No Complaints Found
-                  </td>
-                </tr>
-              ) : (
-                filtered.map((item) => (
-                  <tr key={item._id}>
+        <td>
+          {new Date(item.createdAt).toLocaleString()}
+        </td>
 
-                    <td>{item.name}</td>
-                    <td>{item.email}</td>
-                    <td>{item.mobile}</td>
-                    <td>{item.category}</td>
-                    <td>{item.subject}</td>
-                    <td>{item.location}</td>
-                    <td>{item.complaint}</td>
-                    <td>{new Date(item.createdAt).toLocaleString()}</td>
-                    <td>{item.complaint}</td>
-                    <td>
-                      <button
-                        className={
-                          item.status === "Resolved"
-                            ? "btn btn-success btn-sm"
-                            : "btn btn-warning btn-sm"
-                        }
-                        onClick={() =>
-                          updateStatus(item._id, item.status)
-                        }
-                      >
-                        {item.status}
-                      </button>
-                    </td>
+        <td>{item.complaint}</td>
 
-                    <td>
-                      <button
-                        className="btn btn-danger btn-sm"
-                        onClick={() =>
-                          deleteComplaint(item._id)
-                        }
-                      >
-                        <FaTrash className="me-1" />
-                        Delete
-                      </button>
-                    </td>
+        <td className="text-center">
+          <button
+            className={
+              item.status === "Resolved"
+                ? "btn btn-success btn-sm"
+                : "btn btn-warning btn-sm"
+            }
+            onClick={() =>
+              updateStatus(item._id, item.status)
+            }
+          >
+            {item.status}
+          </button>
+        </td>
 
-                  </tr>
-                ))
-              )}
-
-            </tbody>
+        <td className="text-center">
+          <button
+            className="btn btn-danger btn-sm"
+            onClick={() => deleteComplaint(item._id)}
+          >
+            <FaTrash className="me-1" />
+            Delete
+          </button>
+        </td>
+      </tr>
+    ))
+  )}
+</tbody>
 
           </table>
 

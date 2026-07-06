@@ -10,9 +10,11 @@ import {
 function Login() {
   const navigate = useNavigate();
 
+
   // Railway Backend URL
   const API =
   process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+console.log("API URL:", API);
 
   const [formData, setFormData] = useState({
     email: "",

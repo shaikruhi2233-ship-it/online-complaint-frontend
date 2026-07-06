@@ -12,10 +12,8 @@ function Register() {
   const navigate = useNavigate();
 
   // Backend API
-  const API =
-    process.env.REACT_APP_API_URL ||
-    "https://online-complaint-registration-production.up.railway.app/api";
-
+const API =
+  "https://online-complaint-registration-production.up.railway.app/api";
   const [formData, setFormData] = useState({
     name: "",
     email: "",
