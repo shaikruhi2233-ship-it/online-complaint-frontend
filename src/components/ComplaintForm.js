@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import {
   FaUser,
   FaEnvelope,
+  FaPhone,
+  FaList,
   FaTag,
+  FaMapMarkerAlt,
   FaCommentDots,
   FaPaperPlane,
-  FaEdit,
-  FaMapMarkerAlt,
 } from "react-icons/fa";
 
-const API_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+const API =
+  "https://online-complaint-registration-production.up.railway.app/api";
 
-function ComplaintForm({ editComplaint, setEditComplaint }) {
+function ComplaintForm() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -24,20 +25,6 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
     complaint: "",
   });
 
-  useEffect(() => {
-    if (editComplaint) {
-      setFormData({
-        name: editComplaint.name || "",
-        email: editComplaint.email || "",
-        mobile: editComplaint.mobile || "",
-        category: editComplaint.category || "",
-        subject: editComplaint.subject || "",
-        location: editComplaint.location || "",
-        complaint: editComplaint.complaint || "",
-      });
-    }
-  }, [editComplaint]);
-
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -45,84 +32,52 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
     });
   };
 
-  const clearForm = () => {
-    setFormData({
-      name: "",
-      email: "",
-      mobile: "",
-      category: "",
-      subject: "",
-      location: "",
-      complaint: "",
-    });
-
-    if (setEditComplaint) {
-      setEditComplaint(null);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      alert("Please login first.");
-      return;
-    }
-
     try {
-      if (editComplaint) {
-        await axios.put(
-          `${API_URL}/complaints/${editComplaint._id}`,
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+      const token = localStorage.getItem("token");
 
-        alert("Complaint Updated Successfully");
-      } else {
-        await axios.post(
-          `${API_URL}/complaints`,
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+      await axios.post(
+        `${API}/complaints`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-        alert("Complaint Submitted Successfully");
-      }
+      alert("Complaint Submitted Successfully!");
 
-      clearForm();
+      setFormData({
+        name: "",
+        email: "",
+        mobile: "",
+        category: "",
+        subject: "",
+        location: "",
+        complaint: "",
+      });
+
     } catch (error) {
       console.error(error);
 
       alert(
         error.response?.data?.message ||
-        "Operation Failed"
+        "Failed to submit complaint."
       );
     }
   };
 
   return (
-    <div className="container my-4">
-      <div className="card shadow border-0">
+    <div className="container mt-4">
+      <div className="card shadow">
 
-        <div className="card-header bg-primary text-white text-center">
+        <div className="card-header bg-primary text-white">
           <h3>
-            {editComplaint ? (
-              <>
-                <FaEdit className="me-2" />
-                Update Complaint
-              </>
-            ) : (
-              <>📝 Register Complaint</>
-            )}
+            <FaPaperPlane className="me-2" />
+            Register Complaint
           </h3>
         </div>
 
@@ -132,8 +87,8 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
 
             <div className="mb-3">
               <label className="form-label">
-                <FaUser className="me-2 text-primary" />
-                Full Name
+                <FaUser className="me-2" />
+                Name
               </label>
 
               <input
@@ -148,7 +103,7 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
 
             <div className="mb-3">
               <label className="form-label">
-                <FaEnvelope className="me-2 text-primary" />
+                <FaEnvelope className="me-2" />
                 Email
               </label>
 
@@ -164,46 +119,46 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
 
             <div className="mb-3">
               <label className="form-label">
-                📱 Mobile Number
+                <FaPhone className="me-2" />
+                Mobile
               </label>
 
               <input
-                type="tel"
+                type="text"
                 className="form-control"
                 name="mobile"
                 value={formData.mobile}
                 onChange={handleChange}
                 required
-                pattern="[0-9]{10}"
-                maxLength="10"
               />
             </div>
 
             <div className="mb-3">
               <label className="form-label">
-                📂 Complaint Category
+                <FaList className="me-2" />
+                Category
               </label>
 
               <select
-                className="form-select"
+                className="form-control"
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
                 required
               >
                 <option value="">Select Category</option>
-                <option value="Water">Water</option>
-                <option value="Electricity">Electricity</option>
-                <option value="Internet">Internet</option>
-                <option value="Hostel">Hostel</option>
-                <option value="Cleaning">Cleaning</option>
-                <option value="Others">Others</option>
+                <option>Water Supply</option>
+                <option>Electricity</option>
+                <option>Roads</option>
+                <option>Drainage</option>
+                <option>Sanitation</option>
+                <option>Others</option>
               </select>
             </div>
 
             <div className="mb-3">
               <label className="form-label">
-                <FaTag className="me-2 text-primary" />
+                <FaTag className="me-2" />
                 Subject
               </label>
 
@@ -219,7 +174,7 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
 
             <div className="mb-3">
               <label className="form-label">
-                <FaMapMarkerAlt className="me-2 text-danger" />
+                <FaMapMarkerAlt className="me-2" />
                 Location
               </label>
 
@@ -233,15 +188,15 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
               />
             </div>
 
-            <div className="mb-4">
+            <div className="mb-3">
               <label className="form-label">
-                <FaCommentDots className="me-2 text-primary" />
+                <FaCommentDots className="me-2" />
                 Complaint
               </label>
 
               <textarea
-                rows="5"
                 className="form-control"
+                rows="5"
                 name="complaint"
                 value={formData.complaint}
                 onChange={handleChange}
@@ -249,29 +204,18 @@ function ComplaintForm({ editComplaint, setEditComplaint }) {
               />
             </div>
 
-            <div className="text-center">
-              <button
-                type="submit"
-                className="btn btn-success me-3"
-              >
-                <FaPaperPlane className="me-2" />
-                {editComplaint
-                  ? "Update Complaint"
-                  : "Submit Complaint"}
-              </button>
-
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={clearForm}
-              >
-                Clear
-              </button>
-            </div>
+            <button
+              type="submit"
+              className="btn btn-primary w-100"
+            >
+              <FaPaperPlane className="me-2" />
+              Submit Complaint
+            </button>
 
           </form>
 
         </div>
+
       </div>
     </div>
   );

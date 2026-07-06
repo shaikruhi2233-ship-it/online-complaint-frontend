@@ -10,11 +10,10 @@ import {
 function Login() {
   const navigate = useNavigate();
 
-
-  // Railway Backend URL
+  // Backend API URL
   const API =
-  process.env.REACT_APP_API_URL || "http://localhost:5000/api";
-console.log("API URL:", API);
+    process.env.REACT_APP_API_URL ||
+    "https://online-complaint-registration-production.up.railway.app/api";
 
   const [formData, setFormData] = useState({
     email: "",
@@ -32,22 +31,21 @@ console.log("API URL:", API);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setLoading(true);
 
     try {
       const res = await axios.post(
-  `${API}/auth/login`,
-  formData
-);
+        `${API}/auth/login`,
+        formData
+      );
 
       // Clear previous session
       localStorage.clear();
 
-      // Save token
+      // Save JWT Token
       localStorage.setItem("token", res.data.token);
 
-      // Save user
+      // Save User Data
       localStorage.setItem(
         "user",
         JSON.stringify(res.data.user)
@@ -57,11 +55,10 @@ console.log("API URL:", API);
 
       navigate("/home");
     } catch (error) {
-      console.log(error);
+      console.error(error);
 
       alert(
-        error.response?.data?.message ||
-        "Login Failed"
+        error.response?.data?.message || "Login Failed"
       );
     }
 
@@ -135,10 +132,7 @@ console.log("API URL:", API);
 
               <p className="text-center">
                 Don't have an account?
-                <Link
-                  to="/register"
-                  className="ms-2"
-                >
+                <Link to="/register" className="ms-2">
                   Register
                 </Link>
               </p>

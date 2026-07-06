@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FaSearch, FaEye } from "react-icons/fa";
 
 const API =
-process.env.REACT_APP_API_URL ||
-"http://localhost:5000/api";
+  "https://online-complaint-registration-production.up.railway.app/api";
 function ComplaintList() {
   const navigate = useNavigate();
 
