@@ -6,8 +6,7 @@ import {
   FaSignInAlt,
 } from "react-icons/fa";
 
-const API =
-  "https://online-complaint-registration-production.up.railway.app/api";
+const API = "http://localhost:5000/api";
 
 function AdminLogin() {
   const navigate = useNavigate();

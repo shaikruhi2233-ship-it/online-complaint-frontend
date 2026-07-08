@@ -4,12 +4,14 @@ import { FaArrowLeft } from "react-icons/fa";
 
 function ComplaintDetails() {
   const navigate = useNavigate();
-  const { state } = useLocation();
+  const location = useLocation();
 
-  if (!state) {
+  const complaint = location.state;
+
+  if (!complaint) {
     return (
       <div className="container mt-5 text-center">
-        <h3>No Complaint Found</h3>
+        <h3>No Complaint Details Found</h3>
 
         <button
           className="btn btn-primary mt-3"
@@ -21,25 +23,18 @@ function ComplaintDetails() {
     );
   }
 
-  const complaint = state;
-
   return (
     <div className="container mt-5">
-
-      <div className="card shadow-lg border-0">
-
-        <div className="card-header bg-primary text-white text-center">
+      <div className="card shadow">
+        <div className="card-header bg-primary text-white">
           <h3>Complaint Details</h3>
         </div>
 
         <div className="card-body">
-
           <table className="table table-bordered">
-
             <tbody>
-
               <tr>
-                <th width="30%">Name</th>
+                <th>Name</th>
                 <td>{complaint.name}</td>
               </tr>
 
@@ -49,7 +44,7 @@ function ComplaintDetails() {
               </tr>
 
               <tr>
-                <th>Mobile Number</th>
+                <th>Mobile</th>
                 <td>{complaint.mobile}</td>
               </tr>
 
@@ -91,32 +86,21 @@ function ComplaintDetails() {
               <tr>
                 <th>Submitted On</th>
                 <td>
-                  {new Date(
-                    complaint.createdAt
-                  ).toLocaleString()}
+                  {new Date(complaint.createdAt).toLocaleString()}
                 </td>
               </tr>
-
             </tbody>
-
           </table>
 
-          <div className="text-center">
-
-            <button
-              className="btn btn-secondary"
-              onClick={() => navigate("/complaints")}
-            >
-              <FaArrowLeft className="me-2" />
-              Back to Complaint List
-            </button>
-
-          </div>
-
+          <button
+            className="btn btn-secondary"
+            onClick={() => navigate("/complaints")}
+          >
+            <FaArrowLeft className="me-2" />
+            Back to Complaint List
+          </button>
         </div>
-
       </div>
-
     </div>
   );
 }

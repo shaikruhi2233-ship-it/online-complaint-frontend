@@ -1,15 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import ComplaintList from "../components/ComplaintList";
 
 function ComplaintListPage() {
-  const [editComplaint, setEditComplaint] = useState(null);
-
   return (
     <div className="container mt-4">
-      <ComplaintList
-        editComplaint={editComplaint}
-        setEditComplaint={setEditComplaint}
-      />
+      <ComplaintList />
     </div>
   );
 }

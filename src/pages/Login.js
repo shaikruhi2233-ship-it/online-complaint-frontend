@@ -11,9 +11,7 @@ function Login() {
   const navigate = useNavigate();
 
   // Backend API URL
-  const API =
-    process.env.REACT_APP_API_URL ||
-    "https://online-complaint-registration-production.up.railway.app/api";
+  const API = "http://localhost:5000/api";
 
   const [formData, setFormData] = useState({
     email: "",
@@ -44,6 +42,7 @@ function Login() {
 
       // Save JWT Token
       localStorage.setItem("token", res.data.token);
+      console.log("Login Token:", res.data.token);
 
       // Save User Data
       localStorage.setItem(

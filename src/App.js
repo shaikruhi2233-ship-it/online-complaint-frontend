@@ -24,14 +24,13 @@ function App() {
       <Navbar />
 
       <Routes>
-
         {/* Public Routes */}
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/admin-login" element={<AdminLogin />} />
 
-        {/* User Routes */}
+        {/* Protected User Routes */}
         <Route
           path="/home"
           element={
@@ -59,7 +58,6 @@ function App() {
           }
         />
 
-        {/* Complaint Details */}
         <Route
           path="/complaint/:id"
           element={
@@ -97,9 +95,8 @@ function App() {
           }
         />
 
-        {/* Invalid Route */}
+        {/* Fallback */}
         <Route path="*" element={<Login />} />
-
       </Routes>
 
       <Footer />
